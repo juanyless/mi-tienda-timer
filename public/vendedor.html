@@ -16,39 +16,26 @@
     <div id="lista"></div>
 
     <script>
-        const socket = io();
-        let sonidoHabilitado = false;
-
-        // El navegador necesita este clic para dejar sonar el timbre
-        document.getElementById('btnActivar').onclick = function() {
-            sonidoHabilitado = true;
-            this.style.display = 'none';
-        };
-
-        // Escuchamos lo que el servidor nos reenvía
+        // ... (mantén lo anterior de AudioContext y el botón de activar)
+    
         socket.on('notificar-vendedor', (datos) => {
             const lista = document.getElementById('lista');
-            const div = document.createElement('div');
-            div.className = 'pedido';
-            div.innerHTML = `<strong>NUEVO PEDIDO #${datos.id}</strong><br>Producto: ${datos.producto}<br><small>${datos.hora}</small>`;
-            lista.prepend(div);
-
-            if(sonidoHabilitado) {
-                tocarTimbre();
-            }
+            const tarjeta = document.createElement('div');
+            tarjeta.className = 'pedido-card'; // Asegúrate de tener el estilo CSS arriba
+            
+            tarjeta.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h2 style="margin:0; color:#22c55e;">📦 NUEVO: ${datos.producto}</h2>
+                        <span style="color:#aaa;">Pedido #${datos.id} - ${datos.hora}</span>
+                    </div>
+                    <div style="font-size:1.5rem; font-weight:bold;">$${datos.total}</div>
+                </div>
+            `;
+            
+            lista.prepend(tarjeta);
+            if(sonidoHabilitado) { tocarTimbre(); }
         });
-
-        function tocarTimbre() {
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.frequency.setValueAtTime(880, audioCtx.currentTime); // Nota aguda
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.5);
-        }
     </script>
 </body>
 </html>
