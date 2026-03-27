@@ -1,0 +1,22 @@
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+const path = require('path');
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: "*" } });
+
+// Servir archivos estáticos (tus HTML)
+app.use(express.static(path.join(__dirname, 'public')));
+
+io.on('connection', (socket) => {
+    socket.on('enviar-pedido', (datos) => {
+        io.emit('notificar-vendedor', datos);
+    });
+});
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`Servidor en puerto ${PORT}`);
+});
