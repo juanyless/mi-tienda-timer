@@ -2,43 +2,51 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Panel Vendedor - Recepción</title>
+    <title>Panel Vendedor</title>
     <script src="/socket.io/socket.io.js"></script>
     <style>
-        body { font-family: sans-serif; background: #1a1a1a; color: white; padding: 30px; }
-        .pedido { background: #2d2d2d; border-left: 6px solid #22c55e; padding: 15px; margin: 10px 0; border-radius: 4px; }
-        #btnActivar { background: #f59e0b; color: black; padding: 20px; text-align: center; cursor: pointer; font-weight: bold; margin-bottom: 20px; border-radius: 8px; }
+        body { font-family: sans-serif; background: #2c3e50; color: white; padding: 20px; }
+        #btnActivar { background: #e67e22; color: white; padding: 15px; text-align: center; cursor: pointer; border-radius: 5px; margin-bottom: 20px; }
+        .pedido { background: #34495e; border-left: 5px solid #2ecc71; padding: 15px; margin: 10px 0; border-radius: 5px; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
-    <div id="btnActivar">🔊 CLIC AQUÍ PARA ACTIVAR EL TIMBRE</div>
-    <h1>🔔 Pedidos Entrantes</h1>
+    <div id="btnActivar">🔔 CLIC AQUÍ PARA ACTIVAR SONIDO</div>
+    <h1>📥 Pedidos Recibidos</h1>
     <div id="lista"></div>
 
-    // Escuchamos el evento 'notificar-vendedor' con los nuevos datos
-    socket.on('notificar-vendedor', (datos) => {
-        const lista = document.getElementById('lista');
-        const tarjeta = document.createElement('div');
-        
-        // Le damos un estilo rápido para que se vea como una tarjeta de pedido
-        tarjeta.style = "background:#2d2d2d; border-left:6px solid #22c55e; padding:15px; margin:10px 0; border-radius:8px; font-family:sans-serif; color:white;";
-        
-        tarjeta.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:center;">
+    <script>
+        const socket = io();
+        let sonidoOk = false;
+        document.getElementById('btnActivar').onclick = function() {
+            sonidoOk = true;
+            this.style.display = 'none';
+        };
+
+        socket.on('notificar-vendedor', (datos) => {
+            const lista = document.getElementById('lista');
+            const div = document.createElement('div');
+            div.className = 'pedido';
+            div.innerHTML = `
                 <div>
-                    <h3 style="margin:0; color:#22c55e;">📦 ${datos.producto}</h3>
-                    <span style="color:#aaa; font-size:0.8rem;">ID: #${datos.id} — ${datos.hora}</span>
+                    <strong>${datos.producto}</strong> (ID: #${datos.id})<br>
+                    <small>${datos.hora}</small>
                 </div>
-                <div style="font-size:1.4rem; font-weight:bold;">$${datos.total}</div>
-            </div>
-        `;
-        
-        lista.prepend(tarjeta);
-    
-        // Si activaste el sonido, debería sonar
-        if(sonidoHabilitado) {
-            tocarTimbre();
+                <div style="font-size: 1.2rem;">$${datos.total}</div>
+            `;
+            lista.prepend(div);
+            if(sonidoOk) { tocarTimbre(); }
+        });
+
+        function tocarTimbre() {
+            const ctx = new AudioContext();
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+            osc.connect(g); g.connect(ctx.destination);
+            osc.frequency.value = 800;
+            g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1);
+            osc.start(); osc.stop(ctx.currentTime + 1);
         }
-    });
+    </script>
 </body>
 </html>
