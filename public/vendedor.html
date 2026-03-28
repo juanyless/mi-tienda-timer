@@ -5,48 +5,132 @@
     <title>Panel Vendedor</title>
     <script src="/socket.io/socket.io.js"></script>
     <style>
-        body { font-family: sans-serif; background: #2c3e50; color: white; padding: 20px; }
-        #btnActivar { background: #e67e22; color: white; padding: 15px; text-align: center; cursor: pointer; border-radius: 5px; margin-bottom: 20px; }
-        .pedido { background: #34495e; border-left: 5px solid #2ecc71; padding: 15px; margin: 10px 0; border-radius: 5px; display: flex; justify-content: space-between; }
+        body { font-family: 'Segoe UI', sans-serif; background: #2c3e50; color: white; padding: 20px; }
+        #btnActivar { 
+            background: #e67e22; color: white; padding: 15px; text-align: center; 
+            cursor: pointer; border-radius: 5px; margin-bottom: 20px; font-weight: bold;
+        }
+        #lista { max-width: 600px; margin: 0 auto; }
+        .pedido-card {
+            background: white; color: #333; border-left: 8px solid #2ecc71; 
+            padding: 15px; margin-bottom: 15px; border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
-</head>
+</head> 
 <body>
-    <div id="btnActivar">🔔 CLIC AQUÍ PARA ACTIVAR SONIDO</div>
-    <h1>📥 Pedidos Recibidos</h1>
+    <div id="btnActivar">🔔 CLIC AQUÍ PARA ACTIVAR SONIDO Y TIMBRE</div>
+    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <div style="flex: 1; background: #34495e; padding: 15px; border-radius: 8px; text-align: center;">
+            <span style="display: block; font-size: 0.8rem; text-transform: uppercase;">Pendientes</span>
+            <strong id="contador" style="font-size: 2rem; color: #f1c40f;">0</strong>
+        </div>
+        <button id="btnLimpiar" style="flex: 1; background: #c0392b; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem;">
+            🗑️ LIMPIAR TODO
+        </button>
+    </div>
     <div id="lista"></div>
 
     <script>
         const socket = io();
-        let sonidoOk = false;
-        document.getElementById('btnActivar').onclick = function() {
-            sonidoOk = true;
-            this.style.display = 'none';
-        };
-
-        socket.on('notificar-vendedor', (datos) => {
-            const lista = document.getElementById('lista');
-            const div = document.createElement('div');
-            div.className = 'pedido';
-            div.innerHTML = `
-                <div>
-                    <strong>${datos.producto}</strong> (ID: #${datos.id})<br>
-                    <small>${datos.hora}</small>
-                </div>
-                <div style="font-size: 1.2rem;">$${datos.total}</div>
-            `;
-            lista.prepend(div);
-            if(sonidoOk) { tocarTimbre(); }
-        });
-
-        function tocarTimbre() {
-            const ctx = new AudioContext();
-            const osc = ctx.createOscillator();
-            const g = ctx.createGain();
-            osc.connect(g); g.connect(ctx.destination);
-            osc.frequency.value = 800;
-            g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1);
-            osc.start(); osc.stop(ctx.currentTime + 1);
+        let audioCtx = null;
+        let pedidosPendientes = 0; // El contador empieza en 0
+    
+        // Función maestra para el contador
+        function refrescarContador(accion) {
+            const display = document.getElementById('contador');
+            
+            if (accion === 'suma') pedidosPendientes++;
+            if (accion === 'resta') pedidosPendientes--;
+            if (accion === 'reset') pedidosPendientes = 0;
+    
+            // Seguridad: nunca bajar de cero
+            if (pedidosPendientes < 0) pedidosPendientes = 0;
+    
+            display.innerText = pedidosPendientes;
+            console.log("Pedidos actuales:", pedidosPendientes);
         }
+    
+        document.getElementById('btnActivar').onclick = function() {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            this.style.display = 'none';
+            console.log("Sonido listo");
+        };
+    
+        socket.on('nuevo-pedido', (datos) => {
+            console.log("Llegó pedido:", datos);
+            
+            // 1. Aumentar contador inmediatamente
+            refrescarContador('suma');
+    
+            const lista = document.getElementById('lista');
+            const item = document.createElement('div');
+            item.className = 'pedido-card';
+            
+            // Creamos el contenido de la tarjeta
+            item.innerHTML = `
+                <div style="padding: 10px;">
+                    <p style="margin:0"><strong>👤 ${datos.cliente || 'Mesa?'}</strong></p>
+                    <p style="margin:5px 0">📦 <b>${datos.producto}</b> - $${datos.total}</p>
+                    <button class="btn-entregar" style="background:#27ae60; color:white; border:none; padding:10px; border-radius:5px; cursor:pointer; width:100%; margin-top:10px; font-weight:bold;">
+                        MARCAR COMO ENTREGADO
+                    </button>
+                </div>
+            `;
+    
+            // 2. Programar el botón de entrega para que RESTA al contador
+            const botonEntregar = item.querySelector('.btn-entregar');
+            botonEntregar.onclick = function() {
+                item.remove();
+                refrescarContador('resta');
+            };
+    
+            lista.prepend(item);
+            if (audioCtx) tocarTimbre();
+        });
+    
+        // 3. Botón Limpiar Todo
+        document.getElementById('btnLimpiar').onclick = function() {
+            if (confirm("¿Limpiar todos los pedidos pendientes?")) {
+                document.getElementById('lista').innerHTML = "";
+                refrescarContador('reset');
+            }
+        };
+    
+        function tocarTimbre() {
+    if (!audioCtx) return;
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+
+    // Función interna para crear cada "nota" del timbre
+    const sonarNota = (frecuencia, inicio, duracion) => {
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+
+        // Tipo 'sine' es más puro y fuerte, 'triangle' es más suave
+        osc.type = 'sine'; 
+        osc.frequency.setValueAtTime(frecuencia, audioCtx.currentTime + inicio);
+
+        // Volumen: Subimos a 0.3 (el anterior era 0.1)
+        g.gain.setValueAtTime(0, audioCtx.currentTime + inicio);
+        g.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + inicio + 0.1); 
+        g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + inicio + duracion);
+
+        osc.connect(g);
+        g.connect(audioCtx.destination);
+
+        osc.start(audioCtx.currentTime + inicio);
+        osc.stop(audioCtx.currentTime + inicio + duracion);
+    };
+
+    // Tocamos dos notas para que sea un "Ding-Dong" real
+    sonarNota(660, 0, 1.2);    // El "Ding" (más agudo y largo)
+    sonarNota(520, 0.4, 1.5);  // El "Dong" (más grave, empieza medio segundo después)
+}
     </script>
 </body>
 </html>

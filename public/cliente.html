@@ -3,89 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Gran Tienda Digital</title>
+    <title>Mi Tienda - Pedidos</title>
     <script src="/socket.io/socket.io.js"></script>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
-        h1 { text-align: center; color: #1a1a1a; margin-bottom: 30px; }
-        
-        /* Contenedor Responsivo: se adapta a celular y PC */
+        h1 { text-align: center; color: #1a1a1a; }
+        .id-seccion {
+            background: white; padding: 20px; border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-width: 400px; margin: 20px auto; text-align: center;
+        }
+        input { width: 85%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; }
         .grid-productos { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
-            gap: 15px; 
-            max-width: 1200px; 
-            margin: 0 auto; 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+            gap: 15px; max-width: 1000px; margin: 0 auto; 
         }
-
-        .card { 
-            background: white; border-radius: 12px; padding: 15px; text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: 0.2s;
-        }
-        .card:hover { transform: scale(1.03); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .emoji { font-size: 3rem; margin-bottom: 10px; display: block; }
-        h3 { font-size: 1rem; margin: 10px 0; color: #333; height: 40px; overflow: hidden; }
-        .precio { color: #27ae60; font-weight: bold; font-size: 1.2rem; display: block; margin-bottom: 15px; }
-        
+        .card { background: white; border-radius: 12px; padding: 15px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .emoji { font-size: 2.5rem; display: block; }
+        .precio { color: #27ae60; font-weight: bold; display: block; margin: 10px 0; }
         button { 
             background: #2563eb; color: white; border: none; width: 100%; 
             padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; 
         }
-        button:active { background: #1d4ed8; }
     </style>
 </head>
 <body>
-
-    <h1>🛍️ Mi Tienda Completa</h1>
-    <div class="grid-productos" id="contenedor">
-        </div>
+    <h1>🛍️ Menú Digital</h1>
+    <div class="id-seccion">
+        <label style="display:block; margin-bottom: 10px; font-weight: bold;">¿Tu nombre o Número de Mesa?</label>
+        <input type="text" id="clienteNombre" placeholder="Ej: Mesa 4 / Juan">
+    </div>
+    <div class="grid-productos" id="contenedor"></div>
 
     <script>
         const socket = io();
+        const contenedor = document.getElementById('contenedor');
+        const inputNombre = document.getElementById('clienteNombre');
 
-        // 1. LA LISTA DE PRODUCTOS (Podés llegar a 40 fácilmente)
-        const misProductos = [
+        // Recordar nombre anterior
+        const nombrePrevio = localStorage.getItem('nombreCliente');
+        if (nombrePrevio) inputNombre.value = nombrePrevio;
+
+        const productos = [
             { n: "Espresso", p: 150, e: "☕" },
             { n: "Medialuna", p: 100, e: "🥐" },
             { n: "Tostado", p: 350, e: "🥪" },
             { n: "Jugo Naranja", p: 200, e: "🍹" },
-            { n: "Muffin Choco", p: 180, e: "🧁" },
-            { n: "Té Verde", p: 120, e: "🍵" },
-            { n: "Alfajor", p: 90, e: "🍪" },
-            { n: "Sandwich J&Q", p: 400, e: "🥖" },
-            
-            // Agregá más aquí siguiendo el mismo formato...
+            { n: "Muffin Choco", p: 180, e: "🧁" }
         ];
 
-        // Rellenar hasta llegar a 40 para probar (solo repito los anteriores)
-        while(misProductos.length < 40) {
-            misProductos.push({ n: "Producto Extra " + (misProductos.length + 1), p: 500, e: "🎁" });
+        // Llenar la lista hasta 40 productos
+        while(productos.length < 40) {
+            productos.push({ n: "Producto " + (productos.length + 1), p: 500, e: "🎁" });
         }
 
-        // 2. DIBUJAR LOS PRODUCTOS EN LA PANTALLA
-        const contenedor = document.getElementById('contenedor');
-        
-        misProductos.forEach(prod => {
+        productos.forEach(prod => {
             const card = document.createElement('div');
             card.className = 'card';
             card.innerHTML = `
                 <span class="emoji">${prod.e}</span>
                 <h3>${prod.n}</h3>
                 <span class="precio">$${prod.p}</span>
-                <button onclick="pedir('${prod.n}', ${prod.p})">AGREGAR</button>
+                <button onclick="pedir(this, '${prod.n}', ${prod.p})">PEDIR</button>
             `;
             contenedor.appendChild(card);
         });
 
-        function pedir(nombre, precio) {
+        function pedir(btn, nombreProd, precio) {
+            const nombre = inputNombre.value.trim();
+            if (!nombre) {
+                alert("⚠️ Por favor, pon tu nombre o mesa.");
+                inputNombre.focus();
+                return;
+            }
+            localStorage.setItem('nombreCliente', nombre);
+
             const pedido = {
-                id: Math.floor(Math.random() * 999),
-                producto: nombre,
+                cliente: nombre,
+                producto: nombreProd,
                 total: precio,
                 hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             };
+
+            btn.disabled = true;
+            btn.innerText = "ENVIANDO...";
             socket.emit('enviar-pedido', pedido);
-            console.log("Pedido enviado:", pedido);
+
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerText = "PEDIR";
+                alert("✅ ¡Pedido enviado!");
+            }, 800);
         }
     </script>
 </body>
