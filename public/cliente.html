@@ -69,32 +69,34 @@
             contenedor.appendChild(card);
         });
 
-        function pedir(btn, nombreProd, precio) {
-            const nombre = inputNombre.value.trim();
-            if (!nombre) {
-                alert("⚠️ Por favor, pon tu nombre o mesa.");
-                inputNombre.focus();
-                return;
-            }
-            localStorage.setItem('nombreCliente', nombre);
+        function pedir(nombreProducto, precio) {
+    const nombreCliente = document.getElementById('clienteNombre').value.trim();
 
-            const pedido = {
-                cliente: nombre,
-                producto: nombreProd,
-                total: precio,
-                hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            };
+    if (nombreCliente === "") {
+        alert("⚠️ Por favor, dinos tu nombre para preparar el envío.");
+        document.getElementById('clienteNombre').focus();
+        return;
+    }
 
-            btn.disabled = true;
-            btn.innerText = "ENVIANDO...";
-            socket.emit('enviar-pedido', pedido);
+    // Creamos el objeto del pedido
+    const pedido = {
+        id: Math.floor(Math.random() * 9999),
+        cliente: nombreCliente,
+        producto: nombreProducto,
+        total: precio,
+        hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    
+    // 1. Enviamos los datos al Vendedor (esto activa el Ding-Dong en tu PC)
+    socket.emit('enviar-pedido', pedido);
 
-            setTimeout(() => {
-                btn.disabled = false;
-                btn.innerText = "PEDIR";
-                alert("✅ ¡Pedido enviado!");
-            }, 800);
-        }
+    // 2. Notificamos al cliente con un diseño profesional
+    alert(`✅ ¡Pedido de ${nombreProducto} enviado!\n\nAhora te redirigimos al pago seguro de $${precio.toLocaleString()}.`);
+
+    // 3. ABRIR EL PAGO (Cámbialo por tu link real)
+    // Usamos "_blank" para que tu app no se cierre
+    window.open("https://link.mercadopago.com.ar/juanyless1969", "_blank");
+}
     </script>
 </body>
 </html>
