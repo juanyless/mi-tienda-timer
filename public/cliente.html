@@ -78,7 +78,7 @@
         return;
     }
 
-    // Creamos el objeto del pedido
+    // 1. Creamos el objeto del pedido
     const pedido = {
         id: Math.floor(Math.random() * 9999),
         cliente: nombreCliente,
@@ -87,16 +87,32 @@
         hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
     
-    // 1. Enviamos los datos al Vendedor (esto activa el Ding-Dong en tu PC)
+    // 2. Enviamos los datos al Vendedor (Activa el Ding-Dong)
     socket.emit('enviar-pedido', pedido);
 
-    // 2. Notificamos al cliente con un diseño profesional
-    alert(`✅ ¡Pedido de ${nombreProducto} enviado!\n\nAhora te redirigimos al pago seguro de $${precio.toLocaleString()}.`);
+    // --- AQUÍ EMPIEZA LO NUEVO DE WHATSAPP ---
+    
+    // 3. Preparamos el mensaje para WhatsApp
+    // Usamos encodeURIComponent para que los espacios y símbolos funcionen en el link
+    const mensajeWA = `¡Hola! Soy ${nombreCliente}. Acabo de pedir: ${nombreProducto} por $${precio}. ¿Me confirmas el envío?`;
+    const miTelefono = "543424494674"; // <--- CAMBIA ESTO POR TU NÚMERO REAL
+    
+    const urlWhatsapp = `https://wa.me/${miTelefono}?text=${encodeURIComponent(mensajeWA)}`;
+    
+    // 4. Actualizamos el link del botón flotante para que ya tenga el mensaje listo
+    document.getElementById('btnWhatsapp').href = urlWhatsapp;
 
-    // 3. ABRIR EL PAGO (Cámbialo por tu link real)
-    // Usamos "_blank" para que tu app no se cierre
-    window.open("https://link.mercadopago.com.ar/juanyless1969", "_blank");
+    // 5. Aviso al cliente y apertura de Mercado Pago
+    alert(`✅ ¡Pedido enviado!\n\nPuedes pagar ahora y luego enviarnos el comprobante por el botón de WhatsApp.`);
+    
+    window.open("https://link.mercadopago.com.ar/juanyless1969", "_blank"); // <--- TU LINK DE MERCADO PAGO
 }
     </script>
+    <a href="https://wa.me/543424494674?text=Hola!%20Tengo%20una%20consulta%20sobre%20mi%20pedido" 
+    id="btnWhatsapp"
+    target="_blank" 
+    style="position:fixed; width:60px; height:60px; bottom:20px; right:20px; background-color:#25d366; color:#FFF; border-radius:50px; text-align:center; font-size:30px; box-shadow: 2px 2px 3px #999; z-index:100; display:flex; align-items:center; justify-content:center; text-decoration:none;">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" style="width:35px;">
+ </a>
 </body>
 </html>
