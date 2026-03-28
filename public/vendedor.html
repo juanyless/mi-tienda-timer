@@ -15,27 +15,30 @@
     <h1>🔔 Pedidos Entrantes</h1>
     <div id="lista"></div>
 
-    <script>
-        // ... (mantén lo anterior de AudioContext y el botón de activar)
-    
-        socket.on('notificar-vendedor', (datos) => {
-            const lista = document.getElementById('lista');
-            const tarjeta = document.createElement('div');
-            tarjeta.className = 'pedido-card'; // Asegúrate de tener el estilo CSS arriba
-            
-            tarjeta.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <h2 style="margin:0; color:#22c55e;">📦 NUEVO: ${datos.producto}</h2>
-                        <span style="color:#aaa;">Pedido #${datos.id} - ${datos.hora}</span>
-                    </div>
-                    <div style="font-size:1.5rem; font-weight:bold;">$${datos.total}</div>
+    // Escuchamos el evento 'notificar-vendedor' con los nuevos datos
+    socket.on('notificar-vendedor', (datos) => {
+        const lista = document.getElementById('lista');
+        const tarjeta = document.createElement('div');
+        
+        // Le damos un estilo rápido para que se vea como una tarjeta de pedido
+        tarjeta.style = "background:#2d2d2d; border-left:6px solid #22c55e; padding:15px; margin:10px 0; border-radius:8px; font-family:sans-serif; color:white;";
+        
+        tarjeta.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h3 style="margin:0; color:#22c55e;">📦 ${datos.producto}</h3>
+                    <span style="color:#aaa; font-size:0.8rem;">ID: #${datos.id} — ${datos.hora}</span>
                 </div>
-            `;
-            
-            lista.prepend(tarjeta);
-            if(sonidoHabilitado) { tocarTimbre(); }
-        });
-    </script>
+                <div style="font-size:1.4rem; font-weight:bold;">$${datos.total}</div>
+            </div>
+        `;
+        
+        lista.prepend(tarjeta);
+    
+        // Si activaste el sonido, debería sonar
+        if(sonidoHabilitado) {
+            tocarTimbre();
+        }
+    });
 </body>
 </html>
