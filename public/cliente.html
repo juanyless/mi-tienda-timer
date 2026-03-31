@@ -1,31 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Tienda - Pedidos</title>
+     <link rel="stylesheet" href="estilos.css"> 
     <script src="/socket.io/socket.io.js"></script>
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
-        h1 { text-align: center; color: #1a1a1a; }
-        .id-seccion {
-            background: white; padding: 20px; border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            max-width: 400px; margin: 20px auto; text-align: center;
-        }
-        input { width: 85%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; }
-        .grid-productos { 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
-            gap: 15px; max-width: 1000px; margin: 0 auto; 
-        }
-        .card { background: white; border-radius: 12px; padding: 15px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .emoji { font-size: 2.5rem; display: block; }
-        .precio { color: #27ae60; font-weight: bold; display: block; margin: 10px 0; }
-        button { 
-            background: #2563eb; color: white; border: none; width: 100%; 
-            padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; 
-        }
-    </style>
+     
 </head>
 <body>
     <h1>🛍️ Menú Digital</h1>
@@ -33,80 +15,335 @@
         <label style="display:block; margin-bottom: 10px; font-weight: bold;">¿Tu nombre o Número de Mesa?</label>
         <input type="text" id="clienteNombre" placeholder="Ej: Mesa 4 / Juan">
     </div>
-    <div class="grid-productos" id="contenedor"></div>
-
+    <div class="grid-productos" id="contenedor"></div> 
+ 
     <script>
         const socket = io();
         const contenedor = document.getElementById('contenedor');
         const inputNombre = document.getElementById('clienteNombre');
-
+    
         // Recordar nombre anterior
         const nombrePrevio = localStorage.getItem('nombreCliente');
         if (nombrePrevio) inputNombre.value = nombrePrevio;
-
+    
+        // LISTA DE PRODUCTOS
         const productos = [
-            { n: "Espresso", p: 150, e: "☕" },
-            { n: "Medialuna", p: 100, e: "🥐" },
-            { n: "Tostado", p: 350, e: "🥪" },
-            { n: "Jugo Naranja", p: 200, e: "🍹" },
-            { n: "Muffin Choco", p: 180, e: "🧁" }
+            // Fíjate: si usas 'img', no necesitas 'e'. Si usas 'e', no necesitas 'img'.
+         
+
+
+{ n: "CESTO DE ROPA C/ TAPA BAMBOO", p: 38000, img: "img/art-246-1.jpg" },
+{ n: "CONTROL REMOTO SIN BATERIA", p: 0, img: "img/control.jpg" }, 
+{ n: "LUZ PLACAR CON SENSOR (MINI PERCHA BAMBU)", p: 17000, img: "img/art-3884-1.jpg" }, 
+{ n: "PILAS A27 c/u", p: 2200 , img: "img/art-2473-1.jpg" }, 
+{ n: "PILAS HYTOSHY AAA X 4U", p: 0, img: "img/pilas aaa.jpg" }, 
+{ n: "PILAS R20P FULL TOTAL X 2", p: 0, img: "img/art-3039-1.jpg" }, 
+{ n: "PILAS R20P RECARGABLE DELEX", p: 0, img: "img/art-3713-1.jpg" }, 
+{ n: "RECORTADORA BARBA Y PELO VINTAGE T9", p: 15000, img: "img/art-2348-1.jpg" }, 
+{ n: "RECORTADORA INALAMBRICA 2 EN 1 DL-1871", p: 35000, img: "img/rasuradora.jpg" }, 
+{ n: "RECORTADORA VINTGAGE HYTOSHY", p: 15000, img: "img/art-4067-1.jpg" }, 
+{ n: "RI?ONERA CAMUFLADA", p: 16000, img: "img/art-4056-1.jpg" }, 
+{ n: "RI?ONERA MARRON", p: 16000, img: "img/mochila marron .jpg" }, 
+{ n: "RI?ONERA NEGRA", p: 16000, img: "img/art-4058-1.jpg" }, 
+{ n: "RI?ONERA VERDE", p: 16000, img: "img/art-4057-1.jpg" }, 
+{ n: "TERMO SIFON 3 PIEZAS GRABADO 2.5L AB-2500K", p:45000 , img: "img/art-3972-1.jpg" }, 
+{ n: "TERMO SIFON KIT 3 PIEZAS GRABADO MX-", p: 45000, img: "img/sifon 3 piezas .jpg" }, 
+{ n: "TERMO SISTEM 3 PIEZAS 1.3L MX-232", p: 0, img: "img/art-4026-1.jpg" }, 
+{ n: "TERMO TERER 3 PIEZAS 1.9L KL-190XR", p: 0, img: "img/tere 3 piezas.jpg" }, 
+{ n: "TERMO TERER DISE?O 2L 3 PIEZAS", p: 0, img: "img/TERMO TERER DIS.jpg" }, 
+{ n: "TERMO TERERE 5 PIEZAS 2L LU-4352", p: 0, img: "img/5 piezas.jpg" }, 
+{ n: "TIMBRES INALAMBRICOS ENCHUFE 220", p: 18000, img: "img/art-2843-1.jpg" }, 
+{ n: "TOALLERO PARED ALUMINIO", p: 28000, img: "img/art-1562-1.jpg" },
+{ n: "TROMPETA MUNDIAL X 10 UNIDADES", p: 5000, img: "img/art-4106-1.jpg" }, 
+{ n: "VASO CAFETERO GRABADO", p: 0, img: "img/art-3632-1.jpg" }, 
+{ n: "VASO CHOPERO GRABADO 470ML", p: 17000, img: "img/art-3106-1.jpg" }, 
+{ n: "VASO DISNEY KUROMI 900ML", p: 28000, img: "img/kuromi.jpg" }, 
+{ n: "VASO DISNEY LABUBU 900ML", p: 28000, img: "img/labubu.jpg" }, 
+{ n: "VASO DISNEY MICKEY 900ML", p: 28000, img: "img/art-3975-1.jpg" }, 
+{ n: "VASO DISNEY MINNIE 900ML", p: 28000, img: "img/mini.jpg" }, 
+{ n: "VASO QUENCHER 3 EN 1 1.2L", p:38000, img: "img/3 cuerpos termo.jpg" }, 
+{ n: "VASO QUENCHER ANIMAL PRINT 1.2L", p: 0, img: "img/prince termo.jpg" }, 
+{ n: "VENTILADOR RECARGABLE PORTATIL CON LUZ", p: 25000, img: "img/ventilador .jpg" },
+           { n: "CAMARA SOLAR EXTERIOR V380 PRO", p: 116000, img: "img/art-3827-1.jpg" }, 
+
+
+
+
+
+{ n: "AURICULAR AIRPODS 4? GENERACION C/ANC", p: 0, img: "auriculares/AIRPODS blanco.jpg" }, 
+{ n: "AURICULAR AIRPODS MAX APPLE BLUE", p: 40000, img: "auriculares/AIRPODS MAX APPLE BLUE.jpg" }, 
+{ n: "AURICULAR AIRPODS MAX APPLE GREY", p:40000, img: "auriculares/AIRPODS MAX APPLE GREY.jpg" }, 
+{ n: "AURICULAR AIRPODS MAX APPLE RED", p: 40000, img: "auriculares/AIRPODS MAX APPLE RED.jpg" },
+{ n: "AURICULAR AIRPODS MAX APPLE SILVER", p: 40000, img: "auriculares/MAX APPLE SILVER.jpg" }, 
+{ n: "AURICULAR BEATS STUDIO PRO AZUL", p: 40000, img: "auriculares/BEATS STUDIO PRO AZUL.jpg" }, 
+{ n: "AURICULAR BEATS STUDIO PRO CHOCOLATE", p: 40000, img: "auriculares/BEATS STUDIO PRO CHOCOLATE.jpg" }, 
+{ n: "AURICULAR BEATS STUDIO PRO NEGRO", p: 40000, img: "auriculares/BEATS STUDIO PRO NEGRO.jpg" }, 
+{ n: "AURICULAR BLUETOOTH A6S" , p: 15000, img: "auriculares/BLUETOOTH A6S.jpg" }, 
+{ n: "AURICULAR BLUETOOTH E7S C/VISOR" , p: 15000, img: "auriculares/BLUETOOTH E7S C/VISOR.jpg" }, 
+{ n: "AURICULAR BLUETOOTH MOBILE MOD AU-050 AZUL", p: 30000, img: "auriculares/BLUETOOTH MOBILE MOD AU-050 AZUL.jpg" },
+{ n: "AURICULAR BLUETOOTH MOBILE MOD AU-050 BLANCO", p: 30000, img: "auriculares/BLUETOOTH MOBILE MOD AU-050 BLANCO.jpg" },
+{ n: "AURICULAR BLUETOOTH P47 COLORES" , p: 0, img: "auriculares/BLUETOOTH P47 COLORES.jpg" }, 
+{ n: "AURICULAR DISNEY BLUETOOTH KITY", p: 32000, img: "auriculares/DISNEY BLUETOOTH KITY.jpg" },
+{ n: "AURICULAR DISNEY BLUETOOTH KUROMI", p: 32000, img: "auriculares/kuromi.jpg" },
+{ n: "AURICULAR DISNEY BLUETOOTH LABUBU" , p: 32000, img: "auriculares/BLUETOOTH LABUBU.jpg" }, 
+{ n: "AURICULAR DISNEY BLUETOOTH MARIO BROSS", p: 32000, img: "auriculares/DISNEY BLUETOOTH MARIO BROSS.jpg" }, 
+{ n: "AURICULAR DISNEY BLUETOOTH MICKEY", p: 32000, img: "auriculares/DISNEY BLUETOOTH MICKEY.jpg" }, 
+{ n: "AURICULAR DISNEY BLUETOOTH MINIONS", p: 32000, img: "auriculares/minios.jpg" },
+{ n: "AURICULAR DISNEY BLUETOOTH MINNIE", p:32000, img: "auriculares/DISNEY BLUETOOTH MINNIE.jpg" }, 
+{ n: "AURICULAR DISNEY BLUETOOTH PIKACHU", p: 32000, img: "auriculares/picachu.jpg" }, 
+{ n: "AURICULAR DISNEY BLUETOOTH STITCH CELESTE", p: 32000, img: "auriculares/stitch.jpg" }, 
+{ n: "AURICULAR DISNEY BLUETOOTH STITCH ROSA", p: 32000, img: "auriculares/DISNEY BLUETOOTH STITCH ROSA.jpg" }, 
+{ n: "AURICULAR JBL BEAM 2 ROSA", p:0, img: "auriculares/JBL BEAM 2 ROSA.jpg" }, 
+{ n: "AURICULAR JBL TUNE JB921 RGB", p:0, img: "auriculares/JBL TUNE JB921 RGB.jpg" }, 
+{ n: "AURICULAR JBL WABE BUDS 2 BLANCO", p: 0, img: "auriculares/JBL WABE BUDS 2 BLANCO.jpg" }, 
+{ n: "AURICULAR JBL WABE BUDS 2 ROSA", p:0, img: "auriculares/JBL WABE BUDS 2 ROSA.jpg" }, 
+{ n: "AURICULAR JBL-J81 ROSADO", p: 0, img: "auriculares/JBL-J81 ROSADO.jpg" },
+{ n: "AURICULAR MALIBU RGB TUNE PM860", p: 35000, img: "auriculares/MALIBU RGB TUNE PM860.jpg" },
+{ n: "AURICULAR P47 CAT ROSA", p: 20000, img: "auriculares/P47 CAT ROSA.jpg" },
+{ n: "AURICULAR SAMSUNG AKG S10 +", p: 0, img: "auriculares/AURICULAR SAMSUNG AKG S10 +.jpg" }, 
+{ n: "AURICULAR SAMSUNG HS330 EN BOLSA", p: 0, img: "auriculares/SAMSUNG HS330 EN BOLSA.jpg" }, 
+{ n: "AURICULAR XIAOMI TIPO C", p: 0, img: "auriculares/XIAOMI TIPO C.jpg" },
+        
+{ n: "CABEZAL IPHONE 20W CON MOLDURA PATA OBLICUA", p: 15000, img: "cargadores/CABEZAL IPHONE 20W CON MOLDURA PATA OBLICUA.jpg" },
+{ n: "CABEZAL IPHONE CALIDAD ORIGINAL OVAL", p: 15000, img: "cargadores/CABEZAL IPHONE CALIDAD ORIGINAL OVAL121-1.jpg" },
+{ n: "CABEZAL MOLTOROLA 50W SALIDA C", p: 0, img: "cargadores/CABEZAL MOLTOROLA 50W SALIDA C.jpg" },
+{ n: "CABEZAL MOTOROLA 68W USB/C", p: 0, img: "art-4034-1.jpg" },
+
+{ n: "CABEZAL SAMSUNG 25W AAA SALIDA C", p: 12000, img: "cargadores/CABEZAL SAMSUNG 25W AAA SALIDA C.jpg" },
+{ n: "CABEZAL SAMSUNG 45W AAA SALIDA C", p: 12000, img: "cargadores/CABEZAL SAMSUNG 45W AAA SALIDA C.jpg" },
+{ n: "CABEZAL SAMSUNG 45W SALIDA C TURBO POWER PS01", p: 0, img: "cargadores/CABEZAL SAMSUNG 45W SALIDA C TURBO POWER PS01.jpg" },
+
+{ n: "CARGADOR 3 EN 1 PLEGABLE L139", p: 35000, img: "cargadores/CARGADOR 3 EN 1 PLEGABLE L139.jpg" },
+
+{ n: "CARGADOR BATTERY PACK MAGSAFE LIGHTNING", p: 0, img: "cargadores/art-3620-1.jpg" },
+{ n: "CARGADOR CABEZAL DE AUTO IPHONE CON LOGO 20W SALIDA C", p: 12000, img: "cargadores/CARGADOR CABEZAL DE AUTO IPHONE CON LOGO 20W SALIDA C.jpg" },
+{ n: "CARGADOR CABEZAL IPHONE 20W PATA RECTA SALIDA C", p: 12000, img: "cargadores/CARGADOR CABEZAL IPHONE 20W PATA RECTA SALIDA C.jpg" },
+{ n: "CARGADOR CABEZAL IPHONE C 20W (PATA ARGENTINA)", p: 15000, img: "cargadores/CARGADOR CABEZAL IPHONE C 20W (PATA ARGENTINA).jpg" },
+{ n: "CARGADOR CABEZAL SAMSUNG 25W CAJA BLANCA", p: 15000, img: "cargadores/CARGADOR CABEZAL SAMSUNG 25W CAJA BLANCA.jpg" },
+{ n: "CARGADOR COMPETO SAMSUNG CALIDAD ORIGINAL (CABEZAL 45W USB C-C 5A)", p: 0, img: "cargadores/CARGADOR COMPETO SAMSUNG CALIDAD ORIGINAL (CABEZAL 45W USB C-C 5A).jpg" },
+{ n: "CARGADOR COMPLETO MOTOROLA 68W", p: 20000, img: "art-4034-1.jpg" },
+
+{ n: "CARGADOR DE AUTO ROYACELL C 2 USB MAS CABLE 4.8A", p: 19000, img: "cargadores/CARGADOR DE AUTO ROYACELL C 2 USB MAS CABLE 4.8A.jpg" },
+{ n: "CARGADOR DE PILAS SUELTO BOLSA NEGRO", p: 10000, img: "cargadores/CARGADOR DE PILAS SUELTO BOLSA NEGRO.jpg" },
+{ n: "CARGADOR INALAMBRICO 3 EN 1 CON GIRO 360?", p: 0, img: "cargadores/CARGADOR INALAMBRIC.jpg" },
+{ n: "CARGADOR IPHONE 14 PRO MAX C A LIGTHNING 25W", p: 20000, img: "cargadores/CARGADOR IPHONE 14 PRO MAX C A LIGTHNING 25W.jpg" },
+{ n: "CARGADOR IPHONE 15 PRO MAX 35W C A C", p: 19000, img: "cargadores/CARGADOR IPHONE 15 PRO MAX 35W C A C.jpg" },
+{ n: "CARGADOR MOTOROLA ORIGINAL 50W SALIDA C", p: 0, img: "cargadores/CARGADOR MOTOROLA  50W SALIDA C.jpg" },
+{ n: "CARGADOR NOTEBOOCK HYTOSHY", p: 25000, img: "cargadores/CARGADOR NOTEBOOCK HYTOSHY.jpg" },
+{ n: "CARGADOR POWERBANK LAMBO 5000MAH", p: 20000, img: "cargadores/POWERBANK MAGSAFE IPH/C 10000MAH.jpg" },
+{ n: "CARGADOR ROYACELL TIPO V8 5A", p: 15000, img: "cargadores/CARGADOR ROYALCELL TIPO V8 2.4A RC2400A.jpg" },
+{ n: "CARGADOR SAMSUNG 45W CAJA BLANCA", p: 15000, img: "cargadores/CARGADOR CABEZAL SAMSUNG 25W CAJA BLANCA.jpg" },
+{ n: "CARGADOR TURBO POWER MOTOROLA V8 30W", p: 19000, img: "cargadores/CARGADOR TURBO POWER MOTOROLA V8 30W.jpg" },
+
+
+
+{ n: "CABLE DE RED 1.5M", p: 8000, img: "solo cables/art-1122-1.jpg" },
+{ n: "CABLE DE RED 10M", p: 0, img: "solo cables/art-1122-1.jpg" },
+{ n: "CABLE DE RED 3M", p: 0, img: "solo cables/art-1122-1.jpg" },
+{ n: "CABLE DE RED 5M", p: 0, img: "solo cables/art-1122-1.jpg" },
+{ n: "CABLE HDMI 1.5M MAYADO", p: 10000, img: "solo cables/art-258-1.jpg" },
+{ n: "CABLE HDMI 10M ENSOGADO", p: 0, img: "solo cables/art-258-1.jpg" },
+{ n: "CABLE HDMI 3M 8K ULTRA HD (ALTO RANGO DINAMICO 2.0", p: 0, img: "solo cables/ps3.jpg" },
+{ n: "CABLE HDMI 3M MAYADO", p: 0, img: "solo cables/art-258-1.jpg" },
+{ n: "CABLE HDMI 4K PREMIUN 3M", p: 20000, img: "solo cables/ps3.jpg" },
+{ n: "CABLE HDMI 5M MAYADO", p: 0, img: "solo cables/art-258-1.jpg" },
+{ n: "CABLE POWER TIPO 8", p: 12000, img: "solo cables/art-1130-1.jpg" },
+{ n: "CABLE POWER TREBOL", p: 12000, img: "solo cables/art-1561-1.jpg" },
+{ n: "CABLE PS3 SONY V3", p: 0, img: "solo cables/ps3.jpg" },
+{ n: "CABLE pata chata", p: 10000, img: "solo cables/art-2687-1.jpg" }, 
+ { n: "CABLE AUXILIAR C A 3.5", p: 12000, img: "solo cables/D_Q_NP_853739-MLA100088905699_122025-F.webp" },  
+ 
+ 
+
+ 
+{ n: "USB IPHONE C A C C/ LOGO MALLADO", p: 0, img: "cables usb/USB IPHONE C A C C MALLADO.jpg" },
+{ n: "USB IPHONE C A LIGHTNING C/ LOGO", p: 0, img: "cables usb/art-1237-1.jpg" },
+{ n: "USB IPHONE USB A LIGHTNING C/ LOGO", p: 10000, img: "cables usb/art-2746-1.jpg" },
+{ n: "USB MOBILE tipo C 3.1A/ 1.2M", p: 15000, img: "cables usb/unico modelo azul.jpg" },
+{ n: "USB MOBILE C A C 3.1A", p: 15000, img: "cables usb/art-3062-1.jpg" },
+{ n: "USB MOBILE V8 3.1A / 1.2M", p: 15000, img: "cables usb/USB MOBILE V8 3.1.jpg" },
+{ n: "USB MOTOROLA CAJA BLANCA TIPO C", p: 850000, img: "cables usb/otro type-c dte cble.jpg" },
+{ n: "USB MOTOROLA CAJA BLANCA V8", p: 12000, img: "cables usb/USB MOTOROLA CAJA BLANCA V8.jpg" },
+{ n: "USB MOTOROLA V8 EN BOLSA", p: 9000, img: "cables usb/art-2851-1.jpg" },
+{ n: "USB SAMSUNG C A C CALIDAD PREMIUN", p: 15000, img: "cables usb/USB SAMSUNG C A C CALIDAD PREMIUN.jpg" },
+{ n: "USB SAMSUNG C A C EN CAJA", p: 10000, img: "auriculares/art-1382-1.jpg" },
+{ n: "USB SAMSUNG CAJA BLANCA TIPO C", p: 0, img: "cables usb/USB SAMSUNG CAJA BLANCA TIPO C.jpg" },
+{ n: "USB SAMSUNG V8 1M EN BOLSA", p: 9000, img: "cables usb/USB SAMSUNG V8 1M EN BOLSA.jpg" },
+{ n: "USB V8 ECONOMICO SUELTOS", p: 9000, img: "cables usb/Captura de pantalla 2026-03-31 002253.png" },
+
+{ n: "JOYSTICK PARA CONSOLA GS5 INALAMBRICA", p: 17000, img: "joystick/JOYSTICK PARA CONSOLA GS5 INALAMBRICA.jpg" },
+{ n: "JOYSTICK PS2 SONY", p: 20000, img: "joystick/play 2 .jpg" },
+{ n: "JOYSTICK PS3 SONY AZUL", p:21000, img: "joystick/joystick ps3 azul.jpg" },
+{ n: "JOYSTICK PS3 SONY BLANCO", p: 21000, img: "joystick/joystick ps3 blanco.jpg" },
+{ n: "JOYSTICK PS3 SONY NEGRO", p: 21000, img: "joystick/play 2 .jpg" },
+{ n: "JOYSTICK PS3 SONY ROJO", p: 21000, img: "joystick/ps3 rojo.jpg" },
+
+
+{ n: "CONSOLA DE JUEGOS GAME BOX G5", p: 30000, img: "joystick/CONSOLA DE JUEGOS GAME BOX G5.jpg" },
+{ n: "CONSOLA INALAMBRICA GS5 4K", p: 48000, img: "cables usb/art-3315-1.jpg" },
+{ n: "CONSOLA X6 MODS-C05", p: 85000, img: "joystick/CONSOLA X6 MODS-C05.jpg" },
+ 
+{ n: "PARLANTE ASGARD B16", p: 0, img: "parlantes/PARLANTE ASGARD B16.jpg" },
+{ n: "PARLANTE HYTOSHY 8", p: 0, img: "parlantes/HYTOSHY 8-yh ROJO.jpg" },
+{ n: "PARLANTE JBL CHARGE 5 CAMUFLADO", p: 45000, img: "parlantes/JBL CHARGE 5 CAMUFLADO.jpg" },
+{ n: "PARLANTE JBL CLIP 4 CAMUFLADO", p: 40000, img: "parlantes/JBL CLIP 4 CAMUFLADO.jpg" },
+{ n: "PARLANTE JBL CLIP 4 GRIS", p: 40000, img: "parlantes/JBL CLIP 4 GRIS.jpg" },
+{ n: "PARLANTE JBL CLIP 4 NEGRO", p: 40000, img: "parlantes/JBL CLIP 4 NEGRO.jpg" },
+{ n: "PARLANTE JBL CLIP 4 ROJA", p: 40000, img: "parlantes/JBL CLIP 4 ROJA.jpg" },
+{ n: "PARLANTE JBL FLIP 6 AZUL", p: 0, img: "parlantes/JBL FLIP 6 AZUL.jpg" },
+{ n: "PARLANTE JBL FLIP 6 CAMUFLADO", p: 0, img: "parlantes/JBL FLIP 6 CAMUFLADO.jpg" },
+{ n: "PARLANTE JBL FLIP 6 NEGRO", p: 0, img: "parlantes/JBL FLIP 6 NEGRO.jpg" },
+{ n: "PARLANTE JBL FLIP 6 ROJO", p: 0, img: "parlantes/JBL FLIP 6 ROJO.jpg" },
+{ n: "PARLANTE JBL GO3 CAMUFLADO", p: 45000, img: "parlantes/JBL GO3 CAMUFLADO.jpg" },
+{ n: "PARLANTE PORTABLE SPEAKERS RGB", p: 18000, img: "parlantes/PORTABLE SPEAKERS RGB.jpg" },
+
+
+{ n: "LINTERA MINERA AJUSTABLE VINCHA USB CON SENSOR LUCES LED YT200", p: 18000, img: "iluminacion/LINTERNA MINERA AJUSTABLE VINCHA USB CON SENSOR LUCES LED YT200.jpg" },
+{ n: "LINTERA RECARGABLE USB 19CM", p: 22000, img: "auriculares/art-4101-1.jpg" },
+{ n: "LINTERA PICANA", p: 0, img: "iluminacion/LINTERA PICANA.jpg" },
+
+{ n: "VELADOR STARRY", p: 20000, img: "iluminacion/VELADOR STARRY.jpg" },
+{ n: "LUZ CAPIBARA", p: 20000, img: "iluminacion/LUZ CAPIBARA.jpg" },
+{ n: "LUZ KITTY", p: 20000, img: "iluminacion/LUZ KITTY.jpg" },
+{ n: "LUZ LABUBU", p: 20000, img: "iluminacion/LUZ LABUBU.jpg" },
+{ n: "LUZ RGB FUEGOS ARTIFICIALES BLUETOOTH C/ CONTROL", p: 30000, img: "iluminacion/LUZ RGB FUEGOS ARTIFICIALES BLUETOOTH .jpg" },
+
+{ n: "SOPORTE CELULAR 2 PINZAS", p: 10000, img: "soportes/SOPORTE CELULAR 2 PINZAS.jpg" },
+{ n: "SOPORTE CON GIRO 360? + MAGSAFE L138", p: 22000, img: "soportes/360 Magsafe.jpg" },
+{ n: "SOPORTE DE CELULAR AUTO / MESA DX-604", p: 20000, img: "soportes/AUTO/MESA DX-604.jpg" },
+{ n: "SOPORTE ESTABILIZADOR C/ GIRO 360? Y FALLOW FACE", p: 0, img: "soportes/SOPORTE ESTABILIZADOR .jpg" },
+{ n: "SOPORTE MOBILE CON SOPAPA GIRO 360? A2", p: 19000, img: "soportes/SOPORTE MOBILE CON SOPAPA GIRO .jpg" },
+{ n: "SOPORTE PARA CELULAR AUTOAJUSTABLE REJILLA", p: 22000, img: "soportes/CELULAR AUTOAJUSTABLE REJILLA.jpg" },
+{ n: "SOPORTE PARA MOTO/BICI IMPERMEABLE MT63", p: 20000, img: "soportes/SOPORTE MOBILE CON SOPAPA GIRO .jpg" },
+{ n: "SOPORTE PARA VASO REJILLA Y625", p: 20000, img: "soportes/SOPORTE PARA VASO REJILLA Y625.jpg" },
+{ n: "SOPORTE PLEGLABLE METAL TABLET ZM-0117", p: 22000, img: "soportes/PLEGLABLE METAL TABLET ZM-0117.jpg" },
+{ n: "SOPORTE HITOSHY MOVIL 40", p: 65000, img: "img/art-4105-1.jpg" }, 
+ { n: "SOPORTE MOVIL 14 A 55", p: 20000, img: "img/art-3306-1.jpg" }, 
+ { n: "SOPORTE DE TV FIJO 14 A 42", p: 12000, img: "img/art-3305-1.jpg" }, 
+   { n: "SOPORTE PARED FIJO PARA TV 26-63", p: 15000, img: "img/art-1134-1.jpg" }, 
+{ n: "SOPORTE PARA AUTO C/ SENSOR ELECTRICO AJUSTABLE V56", p: 35000, img: "soportes/art-4017-1.jpg" },
+
+{ n: "TIRA NEON NARANJA", p: 25000, img: "soportes/art-3609-1.jpg" },
+{ n: "TIRA RGB 50*50 3M C/ CONTROL CONEXI?N USB", p: 0, img: "solo cables/art-3887-1.jpg" },
+{ n: "TIRA RGB 50*50 5M C/ CONTROL CONEXI?N USB", p: 0, img: "solo cables/art-3888-1.jpg" },
+{ n: "ANILLO P GRAB", p: 0, img: "iluminacion/art-3696-1.jpg" },
+
+
+{ n: "ANTENA WIFI 1200MBPS 802.IIN", p: 850000, img: "juegos/ANTENA WIFI 1200MBPS 802.IIN.jpg" },
+{ n: "ARO LED RGB 26CM", p: 20000, img: "iluminacion/art-2708-1.jpg" },
+{ n: "BASE DE CARGA M9 15W", p: 0, img: "cargadores/BASE DE CARGA M9 15W.jpg" },
+{ n: "BRAZALETE DEPORTIVO COLORES", p: 10000, img: "juegos/BRAZALETE DEPORTIVO COLORES.jpg" },
+{ n: "COMECABLES DISE?O ADE 1020", p: 6000, img: "juegos/Captura de pantalla 2026-03-31 024418.png" },
+{ n: "MICROFONO CORBATERO K9 TIPO C", p: 20000, img: "iluminacion/art-3990-1.jpg" },
+
+{ n: "CONSOLA GAMER STICK 4K", p: 0, img: "joystick/art-2720-1.jpg" },
+{ n: "FINGER JOYSTICK PARA CELULAR", p:0, img: "joystick/FINGER JOYSTICK PARA CELULAR.jpg" },
+{ n: "FOCO GIRATORIO LED", p: 10000, img: "iluminacion/GIRATORIO LED.jpg" },
+{ n: "FRAPERA RGB PARLANTE", p: 45000, img: "iluminacion/art-3683-1.jpg" },
+{ n: "FUENTE 2A PARA TIRAS LED", p: 850000, img: "joystick/art-3544-1.jpg" },
+{ n: "FUNDAS PARA CAJA DE AIRPODS UNIVERSAL", p: 10000, img: "juegos/Case For Airpods Pro.jpg" },
+{ n: "HOLDER ESCRITORIO PARA CELULAR ADE 4141", p: 6000, img: "juegos/HOLDER ESCRITORIO PARA CELULAR ADE 4141.jpg" },
+{ n: "HOLDER PARA BICI C/ SOPORTE SILICONA BPS-03", p: 10000, img: "soportes/HOLDER PARA BICI silicona.jpg" },
+{ n: "HOLDER PARA BICI/MOTO A ROSCA", p: 10000, img: "soportes/HOLDER PARA BICI/MOTO A ROSCA.jpg" },
+{ n: "JACK IPHONE TIPO C", p: 0, img: "cables usb/JACK IPHONE TIPO C.jpg" },
+
+{ n: "MOUSE INALAMBRICO GTC MOD 122/3", p: 21000, img: "joystick/art-2959-1.jpg" },
+{ n: "MOUSE JEDEL USB W960", p: 18000, img: "juegos/MOUSE JEDEL USB W960.jpg" },
+{ n: "MOUSE PAD HBL ERGONOMICO", p: 19000, img: "juegos/MOUSE PAD HBL ERGONOMIC.jpg" },
+{ n: "OTG FET LUZZ USB A C", p: 0, img: "cables usb/art-4054-1.jpg" },
+{ n: "PANEL RGB C/ SOPORTE CELULAR YM-200", p: 0, img: "iluminacion/PANEL RGB YM-200.jpg" },
+
+{ n: "POP SOCKET AIR BAG DISE?O MOBILE", p: 6000, img: "juegos/POP SOCKET AIR BAG DI.jpg" },
+{ n: "RECEPTOR BLUETOOTH CONSOLA GS5 SUELTO", p: 10000, img: "juegos/RECEPTOR BLUETOOTH CONSOLA GS5 SUELTO.jpg" },
+{ n: "RECEPTOR WIFI USB 300 MBPS DINAX", p: 18000, img: "juegos/RECEPTOR WIFI USB 300 MBPS DINAX.jpg" },
+{ n: "RELOJ PULCERA INFANTIL", p: 21000, img: "juegos/RELOJ PULCERA INFANTIL.jpg" },
+{ n: "RELOJ SMARTWATCH APPLE BLANCO", p: 42000, img: "juegos/RELOJ SMARTWATCH APPLE BLANCO.jpg" },
+{ n: "RELOJ SMARTWATCH APPLE N", p: 42000, img: "juegos/RELOJ SMARTWATCH APPLE N.jpg" },
+{ n: "RELOJ SMARTWATCH APPLE ROSA", p: 42000, img: "juegos/RELOJ SMARTWATCH APPLE ROSA.jpg" },
+{ n: "REPETIDOR WIFI", p: 30000, img: "juegos/REPETIDOR WIFI.jpg" },
+{ n: "RING MOD RELIABLE MOBILE", p: 0, img: "juegos/RING MOD RELIABLE MOBILE.jpg" },
+{ n: "RING STENT EN CAJA MOBILE", p: 8000, img: "juegos/RING STENT EN CAJA MOBILE.jpg" },
+
+
+
+{ n: "SMARTWATCH 8 EN 1", p: 30000, img: "joystick/art-4103-1.jpg" },
+{ n: "POWERBANK MAGSAFE IPH/C 10000MAH", p: 0, img: "cargadores/POWERBANK MAGSAFE IPH/C 10000MAH.jpg" },
+{ n: "TECLADO MAS MOUSE RGB GTC CBG-025N", p: 20000, img: "juegos/TECLADO MAS MOUSE GTC INALAMBRICO CBG-027G.jpg" },
+{ n: "TECLADO USB GTC 206", p: 18000, img: "juegos/TECLADO USB GTC 206.jpg" },
+
+
+
+
+
+
+
+
+             
+             
+
         ];
-
-        // Llenar la lista hasta 40 productos
+    
+        // Llenar la lista hasta 40 productos (Relleno)
         while(productos.length < 40) {
-            productos.push({ n: "Producto " + (productos.length + 1), p: 500, e: "🎁" });
+            productos.push({ n: "Producto " + (productos.length + 1), p: 500, img: "img/auriculares.JPG" });
         }
-
+    
+        // DIBUJAR LOS PRODUCTOS
         productos.forEach(prod => {
             const card = document.createElement('div');
             card.className = 'card';
+            
+            // --- LÓGICA PARA DECIDIR SI MOSTRAR FOTO O EMOJI ---
+            let contenidoVisual;
+            if (prod.img) {
+                // Si el producto tiene 'img', creamos una etiqueta <img>
+                // IMPORTANTE: quitamos el "" de la ruta porque el navegador ya está dentro de public
+                contenidoVisual = `<img src="${prod.img}" class="producto-foto" alt="${prod.n}">`;
+            } else {
+                // Si no tiene foto, usamos el emoji
+                contenidoVisual = `<span class="emoji">${prod.e}</span>`;
+            }
+    
             card.innerHTML = `
-                <span class="emoji">${prod.e}</span>
+                ${contenidoVisual}
                 <h3>${prod.n}</h3>
-                <span class="precio">$${prod.p}</span>
-                <button onclick="pedir(this, '${prod.n}', ${prod.p})">PEDIR</button>
+                <span class="precio">$${prod.p.toLocaleString()}</span>
+                <button onclick="pedir('${prod.n}', ${prod.p})">PEDIR</button>
             `;
             contenedor.appendChild(card);
         });
-
+    
         function pedir(nombreProducto, precio) {
-    const nombreCliente = document.getElementById('clienteNombre').value.trim();
-
-    if (nombreCliente === "") {
-        alert("⚠️ Por favor, dinos tu nombre para preparar el envío.");
-        document.getElementById('clienteNombre').focus();
-        return;
-    }
-
-    // 1. Creamos el objeto del pedido
-    const pedido = {
-        id: Math.floor(Math.random() * 9999),
-        cliente: nombreCliente,
-        producto: nombreProducto,
-        total: precio,
-        hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
+            const nombreCliente = document.getElementById('clienteNombre').value.trim();
     
-    // 2. Enviamos los datos al Vendedor (Activa el Ding-Dong)
-    socket.emit('enviar-pedido', pedido);
-
-    // --- AQUÍ EMPIEZA LO NUEVO DE WHATSAPP ---
+            if (nombreCliente === "") {
+                alert("⚠️ Por favor, dinos tu nombre para preparar el envío.");
+                document.getElementById('clienteNombre').focus();
+                return;
+            }
     
-    // 3. Preparamos el mensaje para WhatsApp
-    // Usamos encodeURIComponent para que los espacios y símbolos funcionen en el link
-    const mensajeWA = `¡Hola! Soy ${nombreCliente}. Acabo de pedir: ${nombreProducto} por $${precio}. ¿Me confirmas el envío?`;
-    const miTelefono = "543424494674"; // <--- CAMBIA ESTO POR TU NÚMERO REAL
+            // Guardar nombre para la próxima vez
+            localStorage.setItem('nombreCliente', nombreCliente);
     
-    const urlWhatsapp = `https://wa.me/${miTelefono}?text=${encodeURIComponent(mensajeWA)}`;
+            const pedido = {
+                id: Math.floor(Math.random() * 9999),
+                cliente: nombreCliente,
+                producto: nombreProducto,
+                total: precio,
+                hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+            
+            socket.emit('enviar-pedido', pedido);
     
-    // 4. Actualizamos el link del botón flotante para que ya tenga el mensaje listo
-    document.getElementById('btnWhatsapp').href = urlWhatsapp;
-
-    // 5. Aviso al cliente y apertura de Mercado Pago
-    alert(`✅ ¡Pedido enviado!\n\nPuedes pagar ahora y luego enviarnos el comprobante por el botón de WhatsApp.`);
+            const mensajeWA = `¡Hola! Soy ${nombreCliente}. Acabo de pedir: ${nombreProducto} por $${precio}. ¿Me confirmas el envío?`;
+            const miTelefono = "543424494674"; 
+            const urlWhatsapp = `https://wa.me/${miTelefono}?text=${encodeURIComponent(mensajeWA)}`;
+            
+            document.getElementById('btnWhatsapp').href = urlWhatsapp;
     
-    window.open("https://link.mercadopago.com.ar/juanyless1969", "_blank"); // <--- TU LINK DE MERCADO PAGO
-}
+            alert(`✅ ¡Pedido enviado!\n\nPuedes pagar ahora y luego enviarnos el comprobante por el botón de WhatsApp.`);
+            window.open("https://link.mercadopago.com.ar/juanyless1969", "_blank");
+        }
     </script>
     <a href="https://wa.me/543424494674?text=Hola!%20Tengo%20una%20consulta%20sobre%20mi%20pedido" 
     id="btnWhatsapp"
