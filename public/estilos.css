@@ -1,76 +1,77 @@
 /* --- NUEVO DISEÑO PARA LA TIENDA --- */
 
 /* 1. El Contenedor Principal (Grid) */
-/* Esto crea columnas automáticas que se adaptan al ancho de la pantalla */
+/* 1. El Contenedor de 3 Columnas */
 .grid-productos {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px; /* Espacio más pequeño para que todo encaje mejor */
-    justify-content: center;
-    padding: 15px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 10px; /* Un poco de aire entre productos */
+    padding: 12px;
+    background-color: #f9f9f9; /* Gris muy clarito de fondo */
 }
 
-/* 2. La Tarjeta de Producto */
-/* Le damos un diseño limpio y profesional */
+/* 2. La Tarjeta (Card) con Bordes Suaves */
 .card {
     background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    width: 180px; /* <--- Tamaño más pequeño y elegante */
-    overflow: hidden;
-    text-align: center;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
     display: flex;
     flex-direction: column;
-    transition: 0.2s;
-    border: 1px solid #eee; /* El botón siempre va abajo */
+    align-items: center;
+    padding-bottom: 8px;
+    overflow: hidden;
+    transition: transform 0.2s ease;
 }
 
-.card:hover {
-    transform: translateY(-5px); /* Pequeño levante al hover */
-}
-
-/* 3. La FOTO (Clave para que no se vea mal) */
-/* Esto soluciona el problema de la imagen gigante de la captura */
+/* 3. La Foto Compacta */
 .producto-foto {
-    width: 100%; /* Ocupa todo el ancho de la tarjeta */
-    height: 250px; /* Altura fija para todas las fotos */
-    object-fit: cover; /* Recorta la imagen para que llene el espacio sin deformarse */
-}
-
-/* Estilo para los emojis si no hay foto */
-.emoji {
-    font-size: 80px;
-    display: block;
-    padding: 20px;
+    width: 100%;
+    height: 95px; /* Altura ideal para que no tape el texto */
+    object-fit: cover;
+    margin-bottom: 5px;
 }
 
 /* 4. Textos y Precios */
+/* 4. Textos y Precios (MÁS CHICOS) */
+/* 4. Ajuste del Título (Para que use el espacio ganado) */
 .card h3 {
-    margin: 15px 10px;
-    font-size: 1.3em;
+    font-size: 0.7rem; 
+    margin: 4px 2px;
+    line-height: 1.1;
+    /* Quitamos el height fijo o lo subimos un poquito para que entren 2 líneas bien */
+    min-height: 32px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible; /* Permitimos que se vea el texto completo */
 }
 
 .precio {
-    display: block;
-    font-size: 1.5em;
-    font-weight: bold;
-    color: #27ae60;
-    margin-bottom: 20px;
+    font-size: 0.75rem; /* Proporcional al nuevo tamaño del título */
+    font-weight: 800; /* Más negrita para que el cliente vea rápido cuánto cuesta */
+    color: #000;
+    margin: 2px 0 6px 0;
 }
 
-/* 5. El Botón PEDIR */
+/* 5. El Botón (Ajuste de letra para que combine) */
 .card button {
-    background: #007bff;
+    width: 85%; /* Un poco más angosto para que no toque los bordes */
+    padding: 4px 0; /* REDUCIDO: De 8px pasamos a 4px para ganar espacio arriba */
+    font-size: 0.6rem; /* Fuente más pequeña para que el botón no sea alto */
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 4px; /* Menos redondeado para que ocupe menos espacio visual */
+    margin-top: 5px; 
+    margin-bottom: 5px;
+    background-color: #007bff; 
     color: white;
     border: none;
-    padding: 15px;
-    font-size: 1.1em;
-    font-weight: bold;
     cursor: pointer;
-    width: 100%;
-    border-radius: 0 0 15px 15px; /* Redondeado solo abajo */
 }
 
-.card button:hover {
-    background: #0056b3;
+/* Efecto al tocar el botón */
+.card button:active {
+    background-color: #e0e0e0;
+    transform: scale(0.96);
 }
