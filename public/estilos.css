@@ -37,10 +37,9 @@ body {
 /* Ajuste de las imágenes para que no se deformen */
 .producto-foto {
     width: 100%;
-    height: 140px; /* Altura fija para que todas sean iguales */
-    object-fit: cover; /* Recorta la imagen para que llene el espacio sin estirarse */
+    height: 150px; /* Esto las hace todas iguales */
+    object-fit: cover; /* Evita que se estiren feo */
     border-radius: 8px;
-    margin-bottom: 10px;
 }
 
 /* Textos dentro de la card */
