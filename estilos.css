@@ -1,77 +1,91 @@
-/* --- NUEVO DISEÑO PARA LA TIENDA --- */
-
-/* 1. El Contenedor Principal (Grid) */
-/* 1. El Contenedor de 3 Columnas */
-.grid-productos {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); 
-    gap: 10px; /* Un poco de aire entre productos */
-    padding: 12px;
-    background-color: #f9f9f9; /* Gris muy clarito de fondo */
+/* Configuración general */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
 }
 
-/* 2. La Tarjeta (Card) con Bordes Suaves */
+/* El contenedor principal: Usamos Grid para que sea responsivo */
+.grid-productos {
+    display: grid;
+    /* Esto crea columnas automáticas de mínimo 160px */
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 15px;
+    padding: 10px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Estilo de las Cards (ya no serán gigantes) */
 .card {
     background: white;
     border-radius: 12px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    border: 1px solid #eee;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding-bottom: 8px;
-    overflow: hidden;
-    transition: transform 0.2s ease;
+    justify-content: space-between;
+    transition: transform 0.2s;
 }
 
-/* 3. La Foto Compacta */
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Ajuste de las imágenes para que no se deformen */
 .producto-foto {
     width: 100%;
-    height: 95px; /* Altura ideal para que no tape el texto */
-    object-fit: cover;
-    margin-bottom: 5px;
+    height: 140px; /* Altura fija para que todas sean iguales */
+    object-fit: cover; /* Recorta la imagen para que llene el espacio sin estirarse */
+    border-radius: 8px;
+    margin-bottom: 10px;
 }
 
-/* 4. Textos y Precios */
-/* 4. Textos y Precios (MÁS CHICOS) */
-/* 4. Ajuste del Título (Para que use el espacio ganado) */
+/* Textos dentro de la card */
 .card h3 {
-    font-size: 0.7rem; 
-    margin: 4px 2px;
-    line-height: 1.1;
-    /* Quitamos el height fijo o lo subimos un poquito para que entren 2 líneas bien */
-    min-height: 32px; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: visible; /* Permitimos que se vea el texto completo */
+    font-size: 0.9rem;
+    margin: 10px 0;
+    color: #333;
+    height: 40px; /* Altura fija para que los botones queden alineados */
+    overflow: hidden;
 }
 
 .precio {
-    font-size: 0.75rem; /* Proporcional al nuevo tamaño del título */
-    font-weight: 800; /* Más negrita para que el cliente vea rápido cuánto cuesta */
-    color: #000;
-    margin: 2px 0 6px 0;
+    display: block;
+    font-weight: bold;
+    color: #2ecc71;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
 }
 
-/* 5. El Botón (Ajuste de letra para que combine) */
-.card button {
-    width: 85%; /* Un poco más angosto para que no toque los bordes */
-    padding: 4px 0; /* REDUCIDO: De 8px pasamos a 4px para ganar espacio arriba */
-    font-size: 0.6rem; /* Fuente más pequeña para que el botón no sea alto */
-    font-weight: bold;
-    text-transform: uppercase;
-    border-radius: 4px; /* Menos redondeado para que ocupe menos espacio visual */
-    margin-top: 5px; 
-    margin-bottom: 5px;
-    background-color: #007bff; 
+/* Botón de pedir */
+button {
+    background-color: #007bff;
     color: white;
     border: none;
+    padding: 10px;
+    border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
+    width: 100%;
 }
 
-/* Efecto al tocar el botón */
-.card button:active {
-    background-color: #e0e0e0;
-    transform: scale(0.96);
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Estilo para el input de nombre */
+.id-seccion {
+    margin-bottom: 30px;
+}
+
+#clienteNombre {
+    padding: 12px;
+    width: 80%;
+    max-width: 300px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
 }
